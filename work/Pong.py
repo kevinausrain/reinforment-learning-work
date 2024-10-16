@@ -14,6 +14,8 @@ env = gym.make("ALE/Pong-v5")
 env = gym.wrappers.ResizeObservation(env, (84, 84))
 env = gym.wrappers.GrayscaleObservation(env)
 
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
 policy_config = {
     "conv1": [4, 32, 8, 4, 0],
     "conv2": [32, 64, 4, 2, 0],
