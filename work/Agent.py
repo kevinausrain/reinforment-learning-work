@@ -7,19 +7,20 @@ import torch.nn as nn
 import matplotlib.pyplot as plt
 from gymnasium import spaces
 import torch.nn.functional as F
-import gymnasium.envs.box2d.car_racing
+#import gymnasium.envs.box2d.car_racing
 from collections import deque
 import moviepy.editor as mpy
 import datetime
 from Network import CNNValueNetwork, CNNPolicyNetwork
 
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 class DQN():
     def __init__(self, env_name, env, config):
         self.env = env
         self.env_name = env_name
-        self.qnet = CNNValueNetwork(config)
-        self.target_qnet = CNNValueNetwork(config)
+        self.qnet = CNNValueNetwork(config).to(device)
+        self.target_qnet = CNNValueNetwork(config).to(device)
         self.target_qnet.copy_from(self.qnet)
 
         self.replay_buffer = deque(maxlen=config['replay_buffer'])
@@ -48,7 +49,7 @@ class DQN():
             self.actions = config['actions']
 
     def behaviour(self, state, steps, stochastic=True):
-        state = torch.tensor(state, dtype=torch.float)
+        state = torch.tensor(state, dtype=torch.float).to(device)
 
         if stochastic and (random.random() <= self.epsilon or steps <= self.warm_up_steps):
             return np.random.choice(self.actions, size = 1, p=self.preferable_action_probs)[0]
@@ -62,21 +63,22 @@ class DQN():
 
     def policy(self, state):
         if not torch.is_tensor(state):
-            state = torch.tensor(state, dtype=torch.float)
+            state = torch.tensor(state, dtype=torch.float).to(device)
 
         return self.qnet(state).detach().argmax().item()
 
     def update(self):
         if len(self.replay_buffer) >= self.minibatch_size:
             batch = self.rng.choice(len(self.replay_buffer), size=self.minibatch_size, replace=False)
-            inputs = torch.zeros((self.minibatch_size, self.stack_num, 84, 84))
+            inputs = torch.zeros((self.minibatch_size, self.stack_num, 84, 84)).to(device)
             if self.env_name.startswith('Pong'):
-                targets = torch.zeros((self.minibatch_size, 3))
+                targets = torch.zeros((self.minibatch_size, 3)).to(device)
             else:
-                targets = torch.zeros((self.minibatch_size, self.env.action_space.n))
+                targets = torch.zeros((self.minibatch_size, self.env.action_space.n)).to(device)
 
             for n, index in enumerate(batch):
                 state, action, reward, next_state, terminated = self.replay_buffer[index]
+                state = torch.tensor(state, dtype=torch.float).to(device)
                 inputs[n, :] = state
                 targets[n, :] = self.target_qnet(state).detach()
                 if terminated:
@@ -104,10 +106,9 @@ class DQN():
             #    state = util.atari_v2_image_preprocess(state)
 
             state = torch.tensor(state, dtype=torch.float)
-
             for i in range(self.stack_num):
                 self.frames.append(state)
-            state = torch.tensor(np.stack(self.frames))
+            state = torch.tensor(np.stack(self.frames)).to(device)
 
             terminated = False
             truncated = False
@@ -125,7 +126,7 @@ class DQN():
                 next_state = torch.tensor(next_state, dtype=torch.float)
 
                 self.frames.append(next_state)
-                next_state = torch.tensor(np.stack(self.frames))
+                next_state = torch.tensor(np.stack(self.frames)).to(device)
                 next_state = next_state
 
                 if self.env_name.startswith('PongXX'):

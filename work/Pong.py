@@ -12,7 +12,7 @@ rng = np.random.default_rng()
 gym.register_envs(ale_py)
 env = gym.make("ALE/Pong-v5")
 env = gym.wrappers.ResizeObservation(env, (84, 84))
-env = gym.wrappers.GrayScaleObservation(env)
+env = gym.wrappers.GrayscaleObservation(env)
 
 policy_config = {
     "conv1": [4, 32, 8, 4, 0],

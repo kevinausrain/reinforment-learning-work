@@ -5,12 +5,12 @@ import torch.nn as nn
 import matplotlib.pyplot as plt
 from gymnasium import spaces
 import torch.nn.functional as F
-import gymnasium.envs.box2d.car_racing
 from collections import deque
 import moviepy.editor as mpy
 import datetime
 import util
 
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 class CNNNetWork(nn.Module):
     def __init__(self, config):
@@ -85,9 +85,10 @@ class CNNValueNetwork(CNNNetWork):
     def update(self, inputs, targets, is_batch):
         self.optimizer.zero_grad()
         if is_batch:
-            outputs = torch.stack([self.net(inp) for inp in inputs])
+            outputs = torch.stack([self.net(inp) for inp in inputs]).to(device)
         else:
-            outputs = self.net(inputs)
+            outputs = self.net(inputs).to(device)
+        targets = targets.to(device)
         loss = self.criterion(outputs, targets)
 
         before_params = [param.clone() for param in self.net.parameters()]
