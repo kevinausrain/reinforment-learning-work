@@ -34,13 +34,13 @@ policy_config = {
     "decay_speed": 0.001,
     "env_name": 'CarRacing',
     "initial_weight_required": False,
-    "use_skip_frames": True
+    "use_skip_frame": True
 }
 value_config = {
     "conv1": [4, 16, 8, 4, 0],
     "conv2": [16, 32, 4, 2, 0],
     "fc1": [32 * 9 * 9, 256],
-    "fc2": [256, 5],
+    "fc2": [256, 1],
     "lr": 0.005,
     "discount": 0.99,
     "greedy": 0.05,
@@ -56,8 +56,8 @@ value_config = {
 
 
 def solve_by_reinforce(train_required, model_name, greedy):
-    max_episodes = 2000
-    max_steps = 2000
+    max_episodes = 10000
+    max_steps = 10000
     criterion_episodes = 200
     stack_frame_num = policy_config['stack_frame_num']
     frames = deque(maxlen=stack_frame_num)
@@ -97,8 +97,8 @@ def solve_by_reinforce(train_required, model_name, greedy):
 
 
 def solve_by_actor_critic(train_required, model_name, greedy):
-    max_episodes = 2000
-    max_steps = 2000
+    max_episodes = 10000
+    max_steps = 10000
     criterion_episodes = 100
     stack_frame_num = policy_config['stack_frame_num']
     frames = deque(maxlen=stack_frame_num)
@@ -138,8 +138,8 @@ def solve_by_actor_critic(train_required, model_name, greedy):
 
 
 def solve_by_dqn(train_required, model_name, greedy, decay_speed, preferable_action_probs):
-    max_episodes = 8000
-    max_steps = 2000
+    max_episodes = 10000
+    max_steps = 10000
     criterion_episodes = 200
     stack_frame_num = policy_config['stack_frame_num']
     frames = deque(maxlen=stack_frame_num)

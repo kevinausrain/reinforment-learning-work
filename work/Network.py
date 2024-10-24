@@ -120,8 +120,6 @@ class CNNPolicyNetwork(CNNNetWork):
         #action = torch.tanh(normal_sample)
         # 计算tanh_normal分布的对数概率密度
         #log_prob = log_prob - torch.log(1 - torch.tanh(action).pow(2) + 1e-7)
-        print(action_probs)
-        print(-torch.sum(action_probs * torch.log(action_probs + 1e-6), dim=-1))
         loss = torch.mean(-dist.log_prob(actions) * returns)
         #before_params = [param.clone() for param in self.net.parameters()]
         loss.backward()

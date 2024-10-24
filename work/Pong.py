@@ -37,7 +37,8 @@ policy_config = {
     "warm_up_steps": 500,
     "decay_speed": 0.001,
     "env_name": 'Pong',
-    "use_skip_frames": True
+    "use_skip_frame": True,
+    "initial_weight_required": True
 }
 
 value_config = {
@@ -56,12 +57,13 @@ value_config = {
     "replay_buffer": 10000,
     "minibatch_size": 32,
     "target_update": 10,
-    "env_name": 'Pong'
+    "env_name": 'Pong',
+    "initial_weight_required": True
 }
 
 def solve_by_reinforce(train_required, model_name, greedy):
-    max_episodes = 20000
-    max_steps = 20000
+    max_episodes = 10000
+    max_steps = 10000
     criterion_episodes = 200
     stack_frame_num = policy_config['stack_frame_num']
     frames = deque(maxlen=stack_frame_num)
@@ -88,8 +90,6 @@ def solve_by_reinforce(train_required, model_name, greedy):
 
     while not (terminated or truncated or steps > max_steps):
         action = agent.policy(state, stochastic=False)
-        if action != 0:
-            action = action + 1
         state, reward, terminated, truncated, info = env.step(action)
         state = util.atari_preProcess(state)
         frames.append(state)
@@ -102,8 +102,8 @@ def solve_by_reinforce(train_required, model_name, greedy):
 
 
 def solve_by_actor_critic(train_required, model_name, greedy):
-    max_episodes = 5000
-    max_steps = 2000
+    max_episodes = 10000
+    max_steps = 10000
     criterion_episodes = 300
     stack_frame_num = policy_config['stack_frame_num']
     frames = deque(maxlen=stack_frame_num)
@@ -142,8 +142,8 @@ def solve_by_actor_critic(train_required, model_name, greedy):
 
 
 def solve_by_dqn(train_required, model_name, greedy, decay_speed, preferable_action_probs):
-    max_episodes = 2000
-    max_steps = 2000
+    max_episodes = 10000
+    max_steps = 10000
     criterion_episodes = 200
     stack_frame_num = policy_config['stack_frame_num']
     frames = deque(maxlen=stack_frame_num)

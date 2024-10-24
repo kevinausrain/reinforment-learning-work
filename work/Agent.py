@@ -121,10 +121,9 @@ class DQN():
             else:
                 state = util.atari_preProcess(state)
 
-            state = torch.tensor(state, dtype=torch.float)
             for i in range(self.stack_frame_num):
                 self.frames.append(state)
-            state = torch.tensor(np.stack(self.frames))
+            state = np.stack(self.frames)
 
             terminated = False
             truncated = False
@@ -151,10 +150,8 @@ class DQN():
                 else:
                     next_state = util.atari_preProcess(next_state)
 
-                next_state = torch.tensor(next_state, dtype=torch.float)
-
                 self.frames.append(next_state)
-                next_state = torch.tensor(np.stack(self.frames))
+                next_state = np.stack(self.frames)
                 next_state = next_state
                 self.replay_buffer.append((state, action, reward, next_state, terminated))
                 actions.append(action)
@@ -219,8 +216,8 @@ class REINFORCE():
         if model_name is not None:
             self.load(model_name)
 
-        self.stack_num = config['stack_num']
-        self.frames = deque(maxlen=self.stack_num)
+        self.stack_frame_num = config['stack_frame_num']
+        self.frames = deque(maxlen=self.stack_frame_num)
         self.skip_frame_num = config['skip_frame_num']
         self.use_skip_frame = config['use_skip_frame']
 
@@ -228,7 +225,7 @@ class REINFORCE():
         self.actions = config['actions']
 
 
-    def policy(self, state, steps, stochastic=True):
+    def policy(self, state, stochastic=True):
         if not torch.is_tensor(state):
             state = torch.tensor(state, dtype=torch.float).unsqueeze(0)
 
@@ -285,7 +282,7 @@ class REINFORCE():
             else:
                 state = util.atari_preProcess(state)
 
-            for i in range(self.stack_num):
+            for i in range(self.stack_frame_num):
                 self.frames.append(state)
             state = np.stack(self.frames)
 
@@ -301,12 +298,12 @@ class REINFORCE():
             while not (terminated or truncated):
                 if self.use_skip_frame:
                     if skipped == 0:
-                        action = self.policy(state, num_steps)
+                        action = self.policy(state)
                         last_action = action
                     else:
                         action = last_action
                 else:
-                    action = self.policy(state, num_steps)
+                    action = self.policy(state)
 
                 next_state, reward, terminated, truncated, _ = self.env.step(action)
                 episode_rewards[-1] += reward
@@ -373,7 +370,9 @@ class ActorCritic():
         self.policy_net = CNNPolicyNetwork(policy_config)
         self.value_net = CNNValueNetwork(value_config)
 
-        self.load(model_name)
+        if model_name is not None:
+            self.load(model_name)
+            print('load success')
 
         self.is_action_discrete = policy_config['is_action_discrete']
         self.is_observation_space_image = policy_config['is_observation_space_image']
@@ -385,15 +384,15 @@ class ActorCritic():
         self.learning_rate = policy_config['lr']
         self.initial_weight_required = policy_config['initial_weight_required']
 
-        self.stack_num = policy_config['stack_num']
-        self.frames = deque(maxlen=self.stack_num)
+        self.stack_frame_num = policy_config['stack_frame_num']
+        self.frames = deque(maxlen=self.stack_frame_num)
         self.skip_frame_num = policy_config['skip_frame_num']
         self.use_skip_frame = policy_config['use_skip_frame']
 
         self.preferable_action_probs = policy_config['preferable_action_probs']
         self.actions = policy_config['actions']
 
-    def policy(self, state, steps, stochastic=True):
+    def policy(self, state, stochastic=True):
         if not torch.is_tensor(state):
             state = torch.tensor(state, dtype=torch.float).unsqueeze(0)
 
@@ -445,7 +444,7 @@ class ActorCritic():
             else:
                 state = util.atari_preProcess(state)
 
-            for i in range(self.stack_num):
+            for i in range(self.stack_frame_num):
                 self.frames.append(state)
             state = np.stack(self.frames)
 
@@ -462,12 +461,12 @@ class ActorCritic():
             while not (terminated or truncated):
                 if self.use_skip_frame:
                     if skipped == 0:
-                        action = self.policy(state, num_steps)
+                        action = self.policy(state)
                         last_action = action
                     else:
                         action = last_action
                 else:
-                    action = self.policy(state, num_steps)
+                    action = self.policy(state)
 
                 next_state, reward, terminated, truncated, _ = self.env.step(action)
                 episode_rewards[-1] += reward

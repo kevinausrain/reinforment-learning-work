@@ -18,8 +18,8 @@ policy_config = {
     "conv1": [4, 32, 8, 4, 0],
     "conv2": [32, 64, 4, 2, 0],
     "conv3": [64, 64, 3, 2, 0],
-    "fc1": [1024, 512],
-    "fc2": [512, 6],
+    "fc1": [384, 128],
+    "fc2": [128, 6],
     "lr": 0.001,
     "discount": 0.99,
     "greedy": 1.0,
@@ -38,15 +38,16 @@ policy_config = {
     "warm_up_steps": 5000,
     "decay_speed": 0.05,
     "env_name": 'SpaceInvader',
-    "use_skip_frames": True
+    "use_skip_frame": True,
+    "initial_weight_required": True
 }
 
 value_config = {
     "conv1": [4, 32, 8, 4, 0],
     "conv2": [32, 64, 4, 2, 0],
     "conv3": [64, 64, 3, 2, 0],
-    "fc1": [1024, 512],
-    "fc2": [512, 1],
+    "fc1": [384, 128],
+    "fc2": [128, 1],
     "lr": 0.001,
     "discount": 0.99,
     "greedy": 0.1,
@@ -56,13 +57,14 @@ value_config = {
     "stack_frame_num": 4,
     "replay_buffer": 10000,
     "minibatch_size": 32,
-    "env_name": 'SpaceInvader'
+    "env_name": 'SpaceInvader',
+    "initial_weight_required": True
 }
 
 
 def solve_by_reinforce(train_required, model_name, greedy):
-    max_episodes = 2000
-    max_steps = 2000
+    max_episodes = 10000
+    max_steps = 10000
     criterion_episodes = 200
     stack_frame_num = policy_config['stack_frame_num']
     frames = deque(maxlen=stack_frame_num)
@@ -101,8 +103,8 @@ def solve_by_reinforce(train_required, model_name, greedy):
 
 
 def solve_by_actor_critic(train_required, model_name, greedy):
-    max_episodes = 2000
-    max_steps = 2000
+    max_episodes = 10000
+    max_steps = 10000
     criterion_episodes = 100
     stack_frame_num = policy_config['stack_frame_num']
     frames = deque(maxlen=stack_frame_num)
@@ -110,7 +112,7 @@ def solve_by_actor_critic(train_required, model_name, greedy):
     if greedy is not None:
         policy_config['greedy'] = greedy
 
-    agent = ActorCritic('SpaceInvader', env, policy_config=policy_config, value_config=value_config)
+    agent = ActorCritic('SpaceInvader', env, model_name, policy_config=policy_config, value_config=value_config)
 
     if train_required:
         agent.train(max_episodes, lambda x: min(x) >= 1200, criterion_episodes)
@@ -141,8 +143,8 @@ def solve_by_actor_critic(train_required, model_name, greedy):
 
 
 def solve_by_dqn(train_required, model_name, greedy, decay_speed, preferable_action_probs):
-    max_episodes = 2000
-    max_steps = 2000
+    max_episodes = 10000
+    max_steps = 10000
     criterion_episodes = 200
     stack_frame_num = policy_config['stack_frame_num']
     frames = deque(maxlen=stack_frame_num)
