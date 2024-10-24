@@ -77,7 +77,8 @@ policy_config = {
     "use_skip_frame": True,
     "type": 'policy',
     "network_type": 'dnn',
-    "target_entropy": -1
+    "target_entropy": -1,
+    "normalize_prob_required": False
 }
 value_config = {
     "conv1": [4, 16, 8, 4, 0],

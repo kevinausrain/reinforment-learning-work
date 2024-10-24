@@ -83,7 +83,8 @@ policy_config = {
     "initial_weight_required": True,
     "target_entropy": -1,
     "network_type": 'dnn',
-    "type": "policy"
+    "type": "policy",
+    "normalize_prob_required": False
 }
 
 value_config = {
@@ -279,11 +280,11 @@ def space_invader_solve_by_sac(train_required, network_type, model_name):
     print(f'Reward: {total_reward}')
 
 # train from start
-space_invader_solve_by_dqn(True,'dnn', None, 1.0, 1e-6, None)
-space_invader_solve_by_dqn(True,'cnn', None, 1.0, 1e-6, None)
+#space_invader_solve_by_dqn(True,'dnn', None, 1.0, 1e-6, None)
+#space_invader_solve_by_dqn(True,'cnn', None, 1.0, 1e-6, None)
 
 # train from start
-space_invader_solve_by_reinforce(True, 'dnn', None)
+#space_invader_solve_by_reinforce(True, 'dnn', None)
 space_invader_solve_by_reinforce(True, 'cnn', None)
 
 # train from start
@@ -291,7 +292,7 @@ space_invader_solve_by_actor_critic(True, 'dnn', None)
 space_invader_solve_by_actor_critic(True, 'cnn', None)
 
 # train from start
-space_invader_solve_by_sac(True, 'dnn', None)
-space_invader_solve_by_sac(True, 'cnn', None)
+#space_invader_solve_by_sac(True, 'dnn', None)
+#space_invader_solve_by_sac(True, 'cnn', None)
 
 env.close()

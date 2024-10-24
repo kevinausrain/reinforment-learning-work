@@ -68,7 +68,7 @@ class CNNNetWork(nn.Module):
 
         layers.append(fc2)
 
-        if config['type'] is 'policy':
+        if config['type'] is 'policy' and config['normalize_prob_required']:
             layers.append(nn.Softmax())
 
         self.net = nn.Sequential(*layers)
@@ -275,7 +275,7 @@ class DNNNetwork(nn.Module):
         layers.append(nn.ReLU())
         layers.append(fc3)
 
-        if config['type'] is 'policy':
+        if config['type'] is 'policy' and config['normalize_prob_required']:
             layers.append(nn.Softmax())
 
         self.net = nn.Sequential(*layers)
