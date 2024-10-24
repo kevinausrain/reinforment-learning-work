@@ -26,8 +26,8 @@ policy_config = {
     "greedy_min": 0.05,
     "is_action_discrete": True,
     "is_observation_space_image": True,
-    "permute": [2, 0, 1],
     "stack_frame_num": 4,
+    "skip_frame_num": 4,
     "replay_buffer": 50000,
     "max_step": 5000000,
     "minibatch_size": 32,
@@ -36,7 +36,8 @@ policy_config = {
     "actions": [0, 1, 2, 3, 4, 5],
     "warm_up_steps": 500,
     "decay_speed": 0.001,
-    "env_name": 'Pong'
+    "env_name": 'Pong',
+    "use_skip_frames": True
 }
 
 value_config = {
@@ -68,7 +69,7 @@ def solve_by_reinforce(train_required, model_name, greedy):
     if greedy is not None:
         policy_config['greedy'] = greedy
 
-    agent = REINFORCE('Pong-84x84', env, model_name, config=policy_config)
+    agent = REINFORCE('Pong', env, model_name, config=policy_config)
 
     if train_required:
         agent.train(max_episodes, lambda x: min(x) >= 15, criterion_episodes)
@@ -110,7 +111,7 @@ def solve_by_actor_critic(train_required, model_name, greedy):
     if greedy is not None:
         policy_config['greedy'] = greedy
 
-    agent = ActorCritic('Pong-84x84', env, model_name, policy_config=policy_config, value_config=value_config)
+    agent = ActorCritic('Pong', env, model_name, policy_config=policy_config, value_config=value_config)
 
     if train_required:
         agent.train(max_episodes, lambda x: min(x) >= 15, criterion_episodes)
@@ -157,7 +158,7 @@ def solve_by_dqn(train_required, model_name, greedy, decay_speed, preferable_act
     if preferable_action_probs is not None:
         policy_config['preferable_action_probs'] = preferable_action_probs
 
-    agent = DQN('Pong-84x84', env, model_name, config=policy_config)
+    agent = DQN('Pong', env, model_name, config=policy_config)
 
     if train_required:
         agent.train(max_episodes, lambda x: min(x) >= 15, criterion_episodes)

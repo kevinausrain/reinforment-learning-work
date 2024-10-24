@@ -29,6 +29,7 @@ policy_config = {
     "is_observation_space_image": True,
     "permute": [2, 0, 1],
     "stack_frame_num": 4,
+    "skip_frame_num": 4,
     "replay_buffer": 10000,
     "minibatch_size": 32,
     "target_update": 20,
@@ -36,7 +37,8 @@ policy_config = {
     "actions": [0, 1, 2, 3, 4, 5],
     "warm_up_steps": 5000,
     "decay_speed": 0.05,
-    "env_name": 'SpaceInvader'
+    "env_name": 'SpaceInvader',
+    "use_skip_frames": True
 }
 
 value_config = {

@@ -50,6 +50,7 @@ class DQN():
 
         self.stack_frame_num = config['stack_frame_num']
         self.skip_frame_num = config['skip_frame_num']
+        self.use_skip_frame = config['use_skip_frame']
         self.frames = deque(maxlen=self.skip_frame_num)
         self.preferable_action_probs = config['preferable_action_probs']
         self.actions = config['actions']
@@ -108,6 +109,7 @@ class DQN():
                    '_decay_speed_' + str(self.decay_speed).replace(".", "") +
                    '_buffer_size_' + str(self.buffer_size) +
                    '_target_update_freq_' + str(self.target_update) +
+                   '_use_skip_frame_' + str(self.use_skip_frame) +
                    '_lr_' + str(self.learning_rate) +
                    '_init_w_' + str(self.initial_weight_required) + '_dqn.txt', 'a')
         rewards = []
@@ -132,11 +134,14 @@ class DQN():
             skipped = 0
             last_action = None
             while not (terminated or truncated):
-                if skipped == 0:
-                    action = self.behaviour(state, num_steps, True)
-                    last_action = action
+                if self.use_skip_frame:
+                    if skipped == 0:
+                        action = self.behaviour(state, num_steps, True)
+                        last_action = action
+                    else:
+                        action = last_action
                 else:
-                    action = last_action
+                    action = self.behaviour(state, num_steps, True)
 
                 skipped = (skipped + 1) % self.skip_frame_num
                 next_state, reward, terminated, truncated, _ = self.env.step(action)
@@ -214,13 +219,13 @@ class REINFORCE():
         if model_name is not None:
             self.load(model_name)
 
-        if self.is_observation_space_image:
-            self.stack_num = config['stack_num']
-            self.frames = deque(maxlen=self.stack_num)
+        self.stack_num = config['stack_num']
+        self.frames = deque(maxlen=self.stack_num)
+        self.skip_frame_num = config['skip_frame_num']
+        self.use_skip_frame = config['use_skip_frame']
 
-        if self.is_action_discrete:
-            self.preferable_action_probs = config['preferable_action_probs']
-            self.actions = config['actions']
+        self.preferable_action_probs = config['preferable_action_probs']
+        self.actions = config['actions']
 
 
     def policy(self, state, steps, stochastic=True):
@@ -268,6 +273,7 @@ class REINFORCE():
         txt = open(save_record_path + str(datetime.datetime.now()) + '_' + self.env_name +
                    '_greedy_' + str(self.epsilon).replace(".", "") +
                    '_lr_' + str(self.learning_rate) +
+                   '_use_skip_frame_' + str(self.use_skip_frame) +
                    '_init_w_' + str(self.initial_weight_required) + '_rein.txt', 'a')
         now = time.time()
         num_steps = 0
@@ -289,8 +295,19 @@ class REINFORCE():
             trajectory = []
             loss = 0
             actions = []
+            skipped = 0
+            last_action = None
+
             while not (terminated or truncated):
-                action = self.policy(state, num_steps)
+                if self.use_skip_frame:
+                    if skipped == 0:
+                        action = self.policy(state, num_steps)
+                        last_action = action
+                    else:
+                        action = last_action
+                else:
+                    action = self.policy(state, num_steps)
+
                 next_state, reward, terminated, truncated, _ = self.env.step(action)
                 episode_rewards[-1] += reward
 
@@ -368,14 +385,13 @@ class ActorCritic():
         self.learning_rate = policy_config['lr']
         self.initial_weight_required = policy_config['initial_weight_required']
 
-        if self.is_observation_space_image:
-            self.permute = policy_config['permute']
-            self.stack_num = policy_config['stack_num']
-            self.frames = deque(maxlen=self.stack_num)
+        self.stack_num = policy_config['stack_num']
+        self.frames = deque(maxlen=self.stack_num)
+        self.skip_frame_num = policy_config['skip_frame_num']
+        self.use_skip_frame = policy_config['use_skip_frame']
 
-        if self.is_action_discrete:
-            self.preferable_action_probs = policy_config['preferable_action_probs']
-            self.actions = policy_config['actions']
+        self.preferable_action_probs = policy_config['preferable_action_probs']
+        self.actions = policy_config['actions']
 
     def policy(self, state, steps, stochastic=True):
         if not torch.is_tensor(state):
@@ -415,6 +431,7 @@ class ActorCritic():
         txt = open(save_record_path + str(datetime.datetime.now()) + '_' + self.env_name +
                    '_greedy_' + str(self.epsilon).replace(".", "") +
                    '_lr_' + str(self.learning_rate) +
+                   '_use_skip_frame_' + str(self.use_skip_frame) +
                    '_init_w_' + str(self.initial_weight_required) + '_ac.txt', 'a')
         now = time.time()
         num_steps = 0
@@ -439,9 +456,19 @@ class ActorCritic():
             policy_loss = 0
             value_loss = 0
             actions = []
+            skipped = 0
+            last_action = None
 
             while not (terminated or truncated):
-                action = self.policy(state, num_steps)
+                if self.use_skip_frame:
+                    if skipped == 0:
+                        action = self.policy(state, num_steps)
+                        last_action = action
+                    else:
+                        action = last_action
+                else:
+                    action = self.policy(state, num_steps)
+
                 next_state, reward, terminated, truncated, _ = self.env.step(action)
                 episode_rewards[-1] += reward
 

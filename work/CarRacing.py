@@ -33,7 +33,8 @@ policy_config = {
     "warm_up_steps": 5000,
     "decay_speed": 0.001,
     "env_name": 'CarRacing',
-    "initial_weight_required": False
+    "initial_weight_required": False,
+    "use_skip_frames": True
 }
 value_config = {
     "conv1": [4, 16, 8, 4, 0],

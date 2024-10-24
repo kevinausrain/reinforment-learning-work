@@ -51,6 +51,7 @@ display_result('/Users/kevin/PycharmProjects/reinforment-learning-work/work/reco
                'REINFORCE PONG lr = 0.001, init weight = True', 6)
 
 
-display_result('/Users/kevin/PycharmProjects/reinforment-learning-work/work/record/2024-10-23 23:24:02.761045_CarRacing_greedy_10_greedy_min_01_decay_speed_1e-06_buffer_size_100000_target_update_freq_10000_lr_0.00025_init_w_False_dqn.txt',
+display_result(
+    '/work/record/2024-10-23 23:24:02.761045_CarRacing_greedy_10_greedy_min_01_decay_speed_1e-06_buffer_size_100000_target_update_freq_10000_use_skip_frame_False_lr_0.00025_init_w_False_dqn.txt',
                'DQN CARRACING lr = 0.00025, epsilon = 1.0 min = 0.1, decay = 1e-6, '
                'target update = 10000, init weight = False', 5)
