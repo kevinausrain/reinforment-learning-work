@@ -1,12 +1,24 @@
 import cv2
-
-def car_v2_image_preprocess(img):
-    img = img[:84, 6:90]  # CarRacing-v2-specific cropping
-    img = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY) / 255.0
-    return img
+import numpy as np
 
 
-def atari_v2_image_preprocess(img):
-    img = img[8:-12, 4:-12]
-    img = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY) / 255.0
-    return img
+def box2d_preProcess(image):
+    image = image[:84, 6:90]  # CarRacing-v2-specific cropping
+    image = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY) / 255.0
+    return image
+
+def atari_preProcess(image):
+    image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)  # To grayscale
+    image = image[20:210, 0:160]
+    image = cv2.resize(image, (64, 80))  # Resize
+    image = image.reshape(64, 80) / 255  # Normalize
+
+    return image
+
+def display_action_distribution(actions, action_num):
+    display = '['
+    for i in range(action_num):
+        display = (display + str(i) + ':' + str(actions.count(i))
+                   + '/' + str(len(actions)) + ' | ')
+    display = display + ']'
+    return display
