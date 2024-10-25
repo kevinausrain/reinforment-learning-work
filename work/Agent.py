@@ -657,8 +657,8 @@ class SAC():
 
         next_log_probs = torch.log(next_probs + 1e-8)
         entropy = -torch.sum(next_probs * next_log_probs, dim=1, keepdim=True)
-        q1_value = torch.stack([self.critic_net_1(next_state) for next_state in next_states])
-        q2_value = torch.stack([self.critic_net_2(next_state) for next_state in next_states])
+        q1_value = torch.stack([self.target_critic_net_1(next_state) for next_state in next_states])
+        q2_value = torch.stack([self.target_critic_net_2(next_state) for next_state in next_states])
         min_qvalue = torch.sum(next_probs * torch.min(q1_value, q2_value), dim=1, keepdim=True)
         next_value = min_qvalue + self.log_alpha.exp() * entropy
         td_target = rewards + self.discount * next_value * (1 - terminated)
