@@ -8,6 +8,7 @@ import moviepy.editor as mpy
 from Agent import REINFORCE, ActorCritic, DQN, SAC
 from collections import deque
 import util
+import matplotlib.pyplot as plt
 
 
 rng = np.random.default_rng()
@@ -19,7 +20,7 @@ q_net_config = {
     "conv1": [4, 32, 8, 4, 0],
     "conv2": [32, 64, 4, 2, 0],
     "conv3": [64, 64, 3, 1, 0],
-    "fc1": [1536, 512],
+    "fc1": [3072, 512],
     "fc2": [512, 6],
     "dnn_fc1": [20480, 1536],
     "dnn_fc2": [1536, 128],
@@ -27,7 +28,7 @@ q_net_config = {
     "lr": 0.001,
     "alpha_lr": 0.01,
     "tau": 0.005,
-    "discount": 0.99,
+    "discount": 0.95,
     "greedy": 0.95,
     "greedy_min": 0.05,
     "is_action_discrete": True,
@@ -35,17 +36,17 @@ q_net_config = {
     "stack_frame_num": 4,
     "skip_frame_num": 4,
     "replay_buffer": 100000,
-    "max_step": 5000000,
-    "minibatch_size": 1000,
-    "batch_size": 64,
-    "target_update": 10000,
+    "max_step": 50000000,
+    "minibatch_size": 2000,
+    "batch_size": 32,
+    "target_update": 10,
     "actions": [0, 1, 2, 3, 4, 5],
     "preferable_action_probs": [0.16, 0.16, 0.17, 0.17, 0.17, 0.17],
     "warm_up_steps": 5000,
     "decay_speed": 0.000001,
     "env_name": 'SpaceInvader',
     "initial_weight_required": False,
-    "use_skip_frame": True,
+    "use_skip_frame": False,
     "type": 'value',
     "network_type": 'dnn'
 }
@@ -54,11 +55,11 @@ policy_config = {
     "conv1": [4, 32, 8, 4, 0],
     "conv2": [32, 64, 4, 2, 0],
     "conv3": [64, 64, 3, 1, 0],
-    "fc1": [1536, 512],
+    "fc1": [3072, 512],
     "fc2": [512, 6],
-    "dnn_fc1": [20480, 1536],
-    "dnn_fc2": [1536, 128],
-    "dnn_fc3": [128, 6],
+    "dnn_fc1": [20480, 200],
+    "dnn_fc2": [200, 6],
+    #"dnn_fc3": [128, 6],
     "lr": 0.001,
     "alpha_lr": 0.01,
     "tau": 0.005,
@@ -70,7 +71,7 @@ policy_config = {
     "stack_frame_num": 4,
     "skip_frame_num": 4,
     "replay_buffer": 100000,
-    "max_step": 5000000,
+    "max_step": 50000000,
     "minibatch_size": 1000,
     "batch_size": 64,
     "target_update": 10,
@@ -91,11 +92,11 @@ value_config = {
     "conv1": [4, 32, 8, 4, 0],
     "conv2": [32, 64, 4, 2, 0],
     "conv3": [64, 64, 3, 1, 0],
-    "fc1": [1536, 512],
+    "fc1": [3072, 512],
     "fc2": [512, 1],
-    "dnn_fc1": [20480, 1536],
-    "dnn_fc2": [1536, 128],
-    "dnn_fc3": [128, 1],
+    "dnn_fc1": [20480, 200],
+    "dnn_fc2": [200, 1],
+    #"dnn_fc3": [128, 1],
     "lr": 0.01,
     "discount": 0.95,
     "greedy": 0.05,
@@ -243,7 +244,7 @@ def space_invader_solve_by_dqn(train_required, network_type, model_name, greedy,
 def space_invader_solve_by_sac(train_required, network_type, model_name):
     max_episodes = 10000
     max_steps = 10000
-    criterion_episodes = 200
+    criterion_episodes = 4000
     stack_frame_num = policy_config['stack_frame_num']
     frames = deque(maxlen=stack_frame_num)
 
@@ -281,18 +282,38 @@ def space_invader_solve_by_sac(train_required, network_type, model_name):
 
 # train from start
 #space_invader_solve_by_dqn(True,'dnn', None, 1.0, 1e-6, None)
-#space_invader_solve_by_dqn(True,'cnn', None, 1.0, 1e-6, None)
+space_invader_solve_by_dqn(True,'cnn', None, 0.7, 1e-6, None)
 
 # train from start
 #space_invader_solve_by_reinforce(True, 'dnn', None)
-space_invader_solve_by_reinforce(True, 'cnn', None)
+#space_invader_solve_by_reinforce(True, 'cnn', None)
 
 # train from start
-space_invader_solve_by_actor_critic(True, 'dnn', None)
-space_invader_solve_by_actor_critic(True, 'cnn', None)
+#space_invader_solve_by_actor_critic(True, 'dnn', None)
+#space_invader_solve_by_actor_critic(True, 'cnn', None)
 
 # train from start
 #space_invader_solve_by_sac(True, 'dnn', None)
 #space_invader_solve_by_sac(True, 'cnn', None)
 
-env.close()
+'''
+fig, axes = plt.subplots(1, 4, figsize=(20, 5))
+states = []
+env.reset()
+a_state = None
+
+for i in range(10):
+    state, reward, terminated, truncated, info = env.step(0)
+    a_state = state
+
+states.append(util.atari_preProcess(a_state))
+for i in range(3):
+    state, reward, terminated, truncated, info = env.step(4)
+    states.append(util.atari_preProcess(state))
+
+for i in range(4):
+    axes[i].imshow(states[i], cmap='gray')
+    axes[i].axis('off')
+plt.show()
+'''
+#env.close()

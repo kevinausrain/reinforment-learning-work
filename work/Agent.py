@@ -93,12 +93,12 @@ class DQN():
                 if self.env_name.startswith('CarRacing'):
                     inputs = torch.zeros((self.batch_size, self.stack_frame_num, 84, 84))
                 else:
-                    inputs = torch.zeros((self.batch_size, self.stack_frame_num, 64, 80))
+                    inputs = torch.zeros((self.batch_size, self.stack_frame_num,95, 80))
             else:
                 if self.env_name.startswith('CarRacing'):
                     inputs = torch.zeros((self.batch_size, self.stack_frame_num * 84 * 84))
                 else:
-                    inputs = torch.zeros((self.batch_size, self.stack_frame_num * 64 * 80))
+                    inputs = torch.zeros((self.batch_size, self.stack_frame_num * 95 * 80))
 
             targets = torch.zeros((self.batch_size, self.env.action_space.n))
             for n, index in enumerate(batch):
@@ -143,6 +143,9 @@ class DQN():
                    '_use_skip_frame_' + str(self.use_skip_frame) +
                    '_lr_' + str(self.learning_rate) +
                    '_init_w_' + str(self.initial_weight_required) + '_dqn.txt', 'a')
+        reward_action_txt = open(save_record_path + str(datetime.datetime.now()) + '_' +
+                                str(self.env_name) + '_use_skip_fame_' + str(self.use_skip_frame)
+                                 + '_dqn_reward.txt', 'a')
         rewards = []
         num_steps = 0
         for episode in range(max_episodes):
@@ -161,41 +164,53 @@ class DQN():
             rewards.append(0)
             loss = 0
             actions = []
-            skipped = 0
-            last_action = None
+
             while not (terminated or truncated):
                 if self.use_skip_frame:
-                    if skipped == 0:
+                    total_reward = 0
+                    for _ in range(self.stack_frame_num):
                         action = self.behaviour(state, num_steps, True)
-                        last_action = action
+                        next_state, reward, terminated, truncated, _ = self.env.step(action)
+                        total_reward += reward
+                        if terminated or truncated:
+                            break
+                    if self.env_name is 'CarRacing':
+                        next_state = util.box2d_preProcess(next_state)
                     else:
-                        action = last_action
+                        next_state = util.atari_preProcess(next_state)
                 else:
                     action = self.behaviour(state, num_steps, True)
+                    next_state, total_reward, terminated, truncated, _ = self.env.step(action)
+                    if self.env_name is 'CarRacing':
+                        next_state = util.box2d_preProcess(next_state)
+                    else:
+                        next_state = util.atari_preProcess(next_state)
 
-                skipped = (skipped + 1) % self.skip_frame_num
-                next_state, reward, terminated, truncated, _ = self.env.step(action)
+                if self.env_name.startswith('Space'):
+                    total_reward = total_reward / 10
 
-                if self.env_name is 'CarRacing':
-                    next_state = util.box2d_preProcess(next_state)
-                else:
-                    next_state = util.atari_preProcess(next_state)
+                reward_action_txt.write(str(num_steps) + ',' +
+                                        str(action) + ',' +
+                                        str(total_reward) + "\n")
 
                 self.frames.append(next_state)
                 next_state = np.stack(self.frames)
 
-                self.replay_buffer.append((state, action, reward, next_state, terminated))
+                self.replay_buffer.append((state, action, total_reward, next_state, terminated))
                 actions.append(action)
 
                 loss += self.update()
                 self.epsilon = max(self.epsilon - self.decay_speed, self.epsilon_min)
 
                 state = next_state
-                rewards[-1] += reward
+                rewards[-1] += total_reward
                 num_steps += 1
 
-                if num_steps >= self.max_step:
-                    break
+            if num_steps >= self.max_step:
+                break
+
+            if self.env_name.startswith('Space'):
+                rewards[episode] = rewards[episode] * 10
 
             txt.write("Episode {} done, steps = {}, actions = {}, loss = {}, rewards = {}, consume time = {}s\n".format(
                 episode + 1, num_steps, util.display_action_distribution(actions, len(self.actions)),
@@ -280,7 +295,6 @@ class REINFORCE():
         states, actions, rewards = list(zip(*trajectory))
         returns = torch.zeros((len(trajectory),))
         returns[-1] = rewards[-1]
-
         for t in reversed(range(len(trajectory) - 1)):
             returns[t] = rewards[t] + self.discount * returns[t + 1]
 
@@ -302,6 +316,8 @@ class REINFORCE():
                    '_lr_' + str(self.learning_rate) +
                    '_use_skip_frame_' + str(self.use_skip_frame) +
                    '_init_w_' + str(self.initial_weight_required) + '_rein.txt', 'a')
+        reward_action_txt = open(save_record_path + str(datetime.datetime.now()) + '_' +
+                                str(self.env_name) + '_rein_reward.txt', 'a')
         now = time.time()
         num_steps = 0
         episode_rewards = []
@@ -326,24 +342,26 @@ class REINFORCE():
             last_action = None
 
             while not (terminated or truncated):
+                total_reward = 0
                 if self.use_skip_frame:
-                    if skipped == 0:
-                        action = self.policy(state)
-                        last_action = action
-                    else:
-                        action = last_action
+                    for _ in range(self.stack_frame_num):
+                        action = self.policy( state, num_steps)
+                        next_state, reward, terminated, truncated, _ = self.env.step(action)
+                        total_reward += reward
+                        if terminated or truncated:
+                            break
                 else:
-                    action = self.policy(state)
+                    action = self.policy(state, num_steps)
+                    next_state, total_reward, terminated, truncated, _ = self.env.step(action)
 
-                next_state, reward, terminated, truncated, _ = self.env.step(action)
-                episode_rewards[-1] += reward
+                episode_rewards[-1] += total_reward
 
-                if not self.env_name.startswith('CarRacing'):
-                    trajectory.append((state, action, reward))
-                    actions.append(action)
-                else:
-                    trajectory.append((state, action, reward))
-                    actions.append(action)
+                reward_action_txt.write(str(num_steps) + ',' +
+                                        str(action) + ',' +
+                                        str(total_reward) + "\n")
+
+                trajectory.append((state, action, total_reward))
+                actions.append(action)
 
                 if self.env_name is 'CarRacing':
                     next_state = util.box2d_preProcess(next_state)
@@ -481,6 +499,8 @@ class ActorCritic():
                    '_lr_' + str(self.learning_rate) +
                    '_use_skip_frame_' + str(self.use_skip_frame) +
                    '_init_w_' + str(self.initial_weight_required) + '_ac.txt', 'a')
+        reward_action_txt = open(save_record_path + str(datetime.datetime.now()) + '_' +
+                                 str(self.env_name) + '_ac_reward.txt', 'a')
         now = time.time()
         num_steps = 0
         episode_rewards = []
@@ -508,17 +528,23 @@ class ActorCritic():
             last_action = None
 
             while not (terminated or truncated):
+                total_reward = 0
                 if self.use_skip_frame:
-                    if skipped == 0:
+                    for _ in range(self.stack_frame_num):
                         action = self.policy(state)
-                        last_action = action
-                    else:
-                        action = last_action
+                        next_state, reward, terminated, truncated, _ = self.env.step(action)
+                        total_reward += reward
+                        if terminated or truncated:
+                            break
                 else:
                     action = self.policy(state)
+                    next_state, total_reward, terminated, truncated, _ = self.env.step(action)
 
-                next_state, reward, terminated, truncated, _ = self.env.step(action)
-                episode_rewards[-1] += reward
+                episode_rewards[-1] += total_reward
+
+                reward_action_txt.write(str(num_steps) + ',' +
+                                        str(action) + ',' +
+                                        str(total_reward) + "\n")
 
                 if self.env_name is 'CarRacing':
                     next_state = util.box2d_preProcess(next_state)
@@ -528,7 +554,7 @@ class ActorCritic():
                 self.frames.append(next_state)
                 next_state = np.stack(self.frames)
 
-                p_loss, v_loss = self.update(state, action, reward, next_state, terminated)
+                p_loss, v_loss = self.update(state, action, total_reward, next_state, terminated)
 
                 if p_loss != 0.0:
                     policy_loss = p_loss

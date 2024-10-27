@@ -8,6 +8,7 @@ import moviepy.editor as mpy
 from Agent import REINFORCE, ActorCritic, DQN, SAC
 from collections import deque
 import util
+import matplotlib.pyplot as plt
 
 
 rng = np.random.default_rng()
@@ -18,7 +19,7 @@ q_net_config = {
     "conv1": [4, 32, 8, 4, 0],
     "conv2": [32, 64, 4, 2, 0],
     "conv3": [64, 64, 3, 1, 0],
-    "fc1": [1536, 512],
+    "fc1": [3072, 512],
     "fc2": [512, 6],
     "dnn_fc1": [20480, 1536],
     "dnn_fc2": [1536, 128],
@@ -26,7 +27,7 @@ q_net_config = {
     "lr": 0.001,
     "alpha_lr": 0.01,
     "tau": 0.005,
-    "discount": 0.99,
+    "discount": 0.8,
     "greedy": 0.95,
     "greedy_min": 0.05,
     "is_action_discrete": True,
@@ -44,7 +45,7 @@ q_net_config = {
     "decay_speed": 0.000001,
     "env_name": 'Pong',
     "initial_weight_required": False,
-    "use_skip_frame": True,
+    "use_skip_frame": False,
     "type": 'value',
     "network_type": 'dnn'
 }
@@ -53,15 +54,15 @@ policy_config = {
     "conv1": [4, 32, 8, 4, 0],
     "conv2": [32, 64, 4, 2, 0],
     "conv3": [64, 64, 3, 1, 0],
-    "fc1": [1536, 512],
+    "fc1": [3072, 512],
     "fc2": [512, 6],
-    "dnn_fc1": [20480, 1536],
-    "dnn_fc2": [1536, 128],
-    "dnn_fc3": [128, 6],
-    "lr": 0.001,
+    "dnn_fc1": [20480, 200],
+    "dnn_fc2": [200, 6],
+    #"dnn_fc3": [128, 6],
+    "lr": 0.0001,
     "alpha_lr": 0.01,
     "tau": 0.005,
-    "discount": 0.99,
+    "discount": 0.9,
     "greedy": 0.95,
     "greedy_min": 0.05,
     "is_action_discrete": True,
@@ -90,10 +91,10 @@ value_config = {
     "conv1": [4, 32, 8, 4, 0],
     "conv2": [32, 64, 4, 2, 0],
     "conv3": [64, 64, 3, 1, 0],
-    "fc1": [1536, 512],
+    "fc1": [3072, 512],
     "fc2": [512, 1],
-    "dnn_fc1": [20480, 1536],
-    "dnn_fc2": [1536, 128],
+    "dnn_fc1": [20480, 200],
+    "dnn_fc2": [200, 1],
     "dnn_fc3": [128, 1],
     "lr": 0.01,
     "discount": 0.95,
@@ -288,10 +289,30 @@ def pong_solve_by_sac(train_required, network_type, model_name):
 
 # train from start
 #pong_solve_by_actor_critic(True, 'dnn', None)
-pong_solve_by_actor_critic(True, 'cnn', None)
+#pong_solve_by_actor_critic(True, 'cnn', None)
 
 # train from start
-pong_solve_by_sac(True, 'dnn', None)
-pong_solve_by_sac(True, 'cnn', None)
+#pong_solve_by_sac(True, 'dnn', None)
+#pong_solve_by_sac(True, 'cnn', None)
 
-env.close()
+#env.close()
+'''
+fig, axes = plt.subplots(1, 4, figsize=(10, 10))
+states = []
+env.reset()
+a_state = None
+
+for i in range(5):
+    state, reward, terminated, truncated, info = env.step(0)
+    a_state = state
+
+states.append(util.atari_preProcess(a_state))
+for i in range(3):
+    state, reward, terminated, truncated, info = env.step(4)
+    states.append(util.atari_preProcess(state))
+
+for i in range(4):
+    axes[i].imshow(states[i], cmap='gray')
+    axes[i].axis('off')
+plt.show()
+'''

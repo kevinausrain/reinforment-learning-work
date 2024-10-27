@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+import torch
 
 
 def box2d_preProcess(image):
@@ -9,9 +10,9 @@ def box2d_preProcess(image):
 
 def atari_preProcess(image):
     image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)  # To grayscale
-    image = image[20:210, 0:160]
-    image = cv2.resize(image, (64, 80))  # Resize
-    image = image.reshape(64, 80) / 255  # Normalize
+    image = image[20:210:2, 0:160:2]
+    #image = cv2.resize(image, (64, 80))  # Resize
+    image = image.reshape(95, 80) / 255  # Normalize
 
     return image
 

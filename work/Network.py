@@ -267,13 +267,17 @@ class DNNNetwork(nn.Module):
 
         fc1 = nn.Linear(config['dnn_fc1'][0], config['dnn_fc1'][1])
         fc2 = nn.Linear(config['dnn_fc2'][0], config['dnn_fc2'][1])
-        fc3 = nn.Linear(config['dnn_fc3'][0], config['dnn_fc3'][1])
 
         layers.append(fc1)
         layers.append(nn.ReLU())
         layers.append(fc2)
-        layers.append(nn.ReLU())
-        layers.append(fc3)
+
+        try:
+            fc3 = nn.Linear(config['dnn_fc3'][0], config['dnn_fc3'][1])
+            layers.append(nn.ReLU())
+            layers.append(fc3)
+        except Exception as e:
+            pass
 
         if config['type'] is 'policy' and config['normalize_prob_required']:
             layers.append(nn.Softmax())
@@ -340,8 +344,8 @@ class SACDNNPolicyNetwork(nn.Module):
         layers.append(nn.Linear(config['dnn_fc1'][0], config['dnn_fc1'][1]))
         layers.append(nn.ReLU())
         layers.append(nn.Linear(config['dnn_fc2'][0], config['dnn_fc2'][1]))
-        layers.append(nn.ReLU())
-        layers.append(nn.Linear(config['dnn_fc3'][0], config['dnn_fc3'][1]))
+        #layers.append(nn.ReLU())
+        #layers.append(nn.Linear(config['dnn_fc3'][0], config['dnn_fc3'][1]))
         layers.append(nn.Softmax())
 
         self.net = nn.Sequential(*layers)
@@ -359,8 +363,8 @@ class SACDNNValueNetwork(nn.Module):
         layers.append(nn.Linear(config['dnn_fc1'][0], config['dnn_fc1'][1]))
         layers.append(nn.ReLU())
         layers.append(nn.Linear(config['dnn_fc2'][0], config['dnn_fc2'][1]))
-        layers.append(nn.ReLU())
-        layers.append(nn.Linear(config['dnn_fc3'][0], config['dnn_fc3'][1]))
+        #layers.append(nn.ReLU())
+        #layers.append(nn.Linear(config['dnn_fc3'][0], config['dnn_fc3'][1]))
 
         self.net = nn.Sequential(*layers)
 

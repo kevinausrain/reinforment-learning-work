@@ -7,6 +7,7 @@ import moviepy.editor as mpy
 from Agent import REINFORCE, ActorCritic, DQN, SAC
 from collections import deque
 import util
+import matplotlib.pyplot as plt
 
 rng = np.random.default_rng()
 env = gym.make("CarRacing-v2", continuous=False)
@@ -19,21 +20,21 @@ q_net_config = {
     "dnn_fc1": [28224, 1536],
     "dnn_fc2": [1536, 128],
     "dnn_fc3": [128, 5],
-    "lr": 0.00025,
+    "lr": 0.001,
     "alpha_lr": 0.01,
     "tau": 0.005,
-    "discount": 0.99,
+    "discount": 0.95,
     "greedy": 1.0,
     "greedy_min": 0.1,
-    "max_step": 5000000,
+    "max_step": 50000000,
     "is_action_discrete": True,
     "is_observation_space_image": True,
     "stack_frame_num": 4,
     "skip_frame_num": 4,
     "replay_buffer": 100000,
     "minibatch_size": 1000,
-    "batch_size": 64,
-    "target_update": 10000,
+    "batch_size": 32,
+    "target_update": 20,
     "actions": [0, 1, 2, 3, 4],
     "preferable_action_probs": [0.2, 0.2, 0.2, 0.2, 0.2],
     "warm_up_steps": 5000,
@@ -50,16 +51,16 @@ policy_config = {
     "conv2": [16, 32, 4, 2, 0],
     "fc1": [32 * 9 * 9, 256],
     "fc2": [256, 5],
-    "dnn_fc1": [28224, 1536],
-    "dnn_fc2": [1536, 128],
-    "dnn_fc3": [128, 5],
-    "lr": 0.00025,
+    "dnn_fc1": [28224, 200],
+    "dnn_fc2": [200, 5],
+    #"dnn_fc3": [128, 5],
+    "lr": 0.0005,
     "alpha_lr": 0.01,
     "tau": 0.005,
-    "discount": 0.99,
+    "discount": 0.9,
     "greedy": 1.0,
     "greedy_min": 0.1,
-    "max_step": 5000000,
+    "max_step": 50000000,
     "is_action_discrete": True,
     "is_observation_space_image": True,
     "stack_frame_num": 4,
@@ -73,7 +74,7 @@ policy_config = {
     "warm_up_steps": 5000,
     "decay_speed": 0.000001,
     "env_name": 'CarRacing',
-    "initial_weight_required": False,
+    "initial_weight_required": True,
     "use_skip_frame": True,
     "type": 'policy',
     "network_type": 'dnn',
@@ -85,21 +86,21 @@ value_config = {
     "conv2": [16, 32, 4, 2, 0],
     "fc1": [32 * 9 * 9, 256],
     "fc2": [256, 1],
-    "dnn_fc1": [28224, 1536],
-    "dnn_fc2": [1536, 128],
-    "dnn_fc3": [128, 1],
-    "lr": 0.01,
-    "discount": 0.99,
+    "dnn_fc1": [28224, 200],
+    "dnn_fc2": [200, 1],
+    #"dnn_fc3": [128, 1],
+    "lr": 0.02,
+    "discount": 0.9,
     "greedy": 0.05,
     "is_action_discrete": True,
     "is_observation_space_image": True,
     "stack_frame_num": 4,
     "replay_buffer": 500000,
     "minibatch_size": 1000,
-    "batch_size": 64,
+    "batch_size": 32,
     "target_update": 10,
     "env_name": 'CarRacing',
-    "initial_weight_required": False,
+    "initial_weight_required": True,
     "type": 'value'
 }
 
@@ -274,7 +275,7 @@ def car_racing_solve_by_sac(train_required, network_type, model_name):
 
 # train from start
 #car_racing_solve_by_dqn(True,'dnn', None, 1.0, 1e-6, [0.2, 0.2, 0.2, 0.2, 0.2])
-#car_racing_solve_by_dqn(True,'cnn', None, 1.0, 1e-6, [0.2, 0.2, 0.2, 0.2, 0.2])
+#car_racing_solve_by_dqn(True,'cnn', None, 0.3, 1e-6, [0.2, 0.2, 0.2, 0.2, 0.2])
 
 # train from start
 #car_racing_solve_by_reinforce(True, 'dnn', None)
@@ -282,10 +283,32 @@ def car_racing_solve_by_sac(train_required, network_type, model_name):
 
 # train from start
 #car_racing_solve_by_actor_critic(True, 'dnn', None)
-car_racing_solve_by_actor_critic(True, 'cnn', None)
+#car_racing_solve_by_actor_critic(True, 'cnn', None)
 
 # train from start
 #car_racing_solve_by_sac(True, 'dnn', None)
 #car_racing_solve_by_sac(True, 'cnn', None)
 
-env.close()
+#env.close()
+
+
+fig, axes = plt.subplots(1, 4, figsize=(20, 5))
+states = []
+env.reset()
+a_state = None
+
+for i in range(300):
+    state, reward, terminated, truncated, info = env.step(0)
+    a_state = state
+
+states.append(util.box2d_preProcess(a_state))
+for i in range(3):
+    state, reward, terminated, truncated, info = env.step(3)
+    states.append(util.box2d_preProcess(state))
+
+for i in range(4):
+    axes[i].imshow(states[i], cmap='gray')
+    axes[i].axis('off')
+plt.show()
+
+
