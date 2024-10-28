@@ -1,0 +1,11 @@
+Episode 1 done, steps = 148, actions = [0:63/148 | 1:13/148 | 2:11/148 | 3:7/148 | 4:12/148 | 5:42/148 | ], loss = 169.37828063964844, rewards = 350.0, consume time = 0.9783248901367188s
+Episode 2 done, steps = 271, actions = [0:114/123 | 1:0/123 | 2:0/123 | 3:0/123 | 4:0/123 | 5:9/123 | ], loss = 2.4397165775299072, rewards = 55.0, consume time = 1.835433006286621s
+Episode 3 done, steps = 443, actions = [0:162/172 | 1:0/172 | 2:0/172 | 3:0/172 | 4:0/172 | 5:10/172 | ], loss = 0.12743958830833435, rewards = 5.0, consume time = 3.0116279125213623s
+Episode 4 done, steps = 612, actions = [0:166/169 | 1:0/169 | 2:0/169 | 3:0/169 | 4:0/169 | 5:3/169 | ], loss = 0.2999489903450012, rewards = 15.0, consume time = 4.124958038330078s
+Episode 5 done, steps = 786, actions = [0:173/174 | 1:0/174 | 2:0/174 | 3:0/174 | 4:0/174 | 5:1/174 | ], loss = 0.0, rewards = 0.0, consume time = 5.253186941146851s
+Episode 6 done, steps = 960, actions = [0:174/174 | 1:0/174 | 2:0/174 | 3:0/174 | 4:0/174 | 5:0/174 | ], loss = 0.0, rewards = 0.0, consume time = 6.386618137359619s
+Episode 7 done, steps = 1134, actions = [0:174/174 | 1:0/174 | 2:0/174 | 3:0/174 | 4:0/174 | 5:0/174 | ], loss = 0.0, rewards = 0.0, consume time = 7.509405851364136s
+Episode 8 done, steps = 1308, actions = [0:174/174 | 1:0/174 | 2:0/174 | 3:0/174 | 4:0/174 | 5:0/174 | ], loss = 0.0, rewards = 0.0, consume time = 8.633682250976562s
+Episode 9 done, steps = 1482, actions = [0:174/174 | 1:0/174 | 2:0/174 | 3:0/174 | 4:0/174 | 5:0/174 | ], loss = 0.0, rewards = 0.0, consume time = 9.775355100631714s
+Episode 10 done, steps = 1656, actions = [0:174/174 | 1:0/174 | 2:0/174 | 3:0/174 | 4:0/174 | 5:0/174 | ], loss = 0.0, rewards = 0.0, consume time = 10.962199926376343s
+Episode 11 done, steps = 1830, actions = [0:174/174 | 1:0/174 | 2:0/174 | 3:0/174 | 4:0/174 | 5:0/174 | ], loss = 0.0, rewards = 0.0, consume time = 12.12726902961731s

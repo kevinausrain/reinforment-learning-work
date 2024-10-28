@@ -1,0 +1,2 @@
+Episode 1 done, steps = 438, actions = [0:75/438 | 1:66/438 | 2:84/438 | 3:74/438 | 4:66/438 | 5:73/438 | ], loss = 0, rewards = 50.0, consume time = 0.1407918930053711s
+Episode 2 done, steps = 832, actions = [0:75/394 | 1:63/394 | 2:77/394 | 3:55/394 | 4:68/394 | 5:56/394 | ], loss = 0, rewards = 120.0, consume time = 0.264462947845459s

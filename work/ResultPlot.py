@@ -93,33 +93,30 @@ def display_action_reward(file, title):
 #display_action_reward('/Users/kevin/PycharmProjects/reinforment-learning-work/work/record/2024-10-26 03:00:04.409273_Pong_rein_reward.txt',
 #               'PONG reward for each step')
 
-display_result(
-    '/Users/kevin/PycharmProjects/reinforment-learning-work/work/record/2024-10-24 18:13:18.416525_SpaceInvader_greedy_10_greedy_min_01_decay_speed_1e-06_buffer_size_10000_target_update_freq_20_use_skip_frame_True_lr_0.001_init_w_True_dqn.txt',
-               'SPACE INVADER DQN lr = 0.001, gamma = 0.99, epsilon = 1.0 min = 0.1, decay = 1e-6, '
-               'target update = 10000, init weight = False', 6)
+#display_result('/Users/kevin/PycharmProjects/reinforment-learning-work/work/record/2024-10-28 05:34:41.922670_SpaceInvader_lr_0.001_use_skip_frame_True_init_w_True_rein.txt'
+#               ,'SPACE INVADER REINFORCE lr = 0.001, gamma = 0.95, init weight = True', 6)
 
-display_result(
-    '/Users/kevin/PycharmProjects/reinforment-learning-work/work/record/2024-10-27 04:59:46.612269_SpaceInvader_greedy_09_greedy_min_005_decay_speed_1e-06_buffer_size_100000_target_update_freq_10_use_skip_frame_False_lr_0.001_init_w_False_dqn.txt',
-               'SPACE INVADER DQN lr = 0.001, gamma = 0.95, epsilon = 0.9 min = 0.1, decay = 1e-6, '
-               'target update = 20, init weight = True', 6)
+#display_result(
+#    '/Users/kevin/PycharmProjects/reinforment-learning-work/work/record/2024-10-27 04:59:46.612269_SpaceInvader_greedy_09_greedy_min_005_decay_speed_1e-06_buffer_size_100000_target_update_freq_10_use_skip_frame_False_lr_0.001_init_w_False_dqn.txt',
+#               'SPACE INVADER DQN lr = 0.001, gamma = 0.95, epsilon = 0.9 min = 0.1, decay = 1e-6, '
+#               'target update = 20, init weight = True', 6)
 
-display_result('/Users/kevin/PycharmProjects/reinforment-learning-work/work/record/2024-10-26 18:15:30.277496_CarRacing_greedy_03_greedy_min_01_decay_speed_1e-06_buffer_size_100000_target_update_freq_20_use_skip_frame_True_lr_0.0005_init_w_False_dqn.txt',
-               'CARRACING DQN lr = 0.0005, gamma = 0.9, epsilon = 0.3 min = 0.1, decay = 1e-6, '
-               'target update = 20, init weight = False', 5)
+#display_result('/Users/kevin/PycharmProjects/reinforment-learning-work/work/record/2024-10-26 18:15:30.277496_CarRacing_greedy_03_greedy_min_01_decay_speed_1e-06_buffer_size_100000_target_update_freq_20_use_skip_frame_True_lr_0.0005_init_w_False_dqn.txt',
+#               'CARRACING DQN lr = 0.0005, gamma = 0.9, epsilon = 0.3 min = 0.1, decay = 1e-6, '
+#               'target update = 20, init weight = False', 5)
 
-'''
+
+
 display_result('/Users/kevin/PycharmProjects/reinforment-learning-work/work/record/2024-10-23 02:53:25.472859_Pong-84x84_greedy_095_rein.txt',
                'REINFORCE PONG lr = 0.001, init weight = True', 6)
 
 
 display_result(
-    '/Users/kevin/PycharmProjects/reinforment-learning-work/work/record/2024-10-23 23:24:02.761045_CarRacing_greedy_10_greedy_min_01_decay_speed_1e-06_buffer_size_100000_target_update_freq_10000_use_skip_frame_False_lr_0.00025_init_w_False_dqn.txt',
-               'DQN CARRACING lr = 0.00025, epsilon = 1.0 min = 0.1, decay = 1e-6, '
-               'target update = 10000, init weight = False', 5)
+    '/Users/kevin/PycharmProjects/reinforment-learning-work/work/record/2024-10-27 15:43:46.590019_CarRacing_lr_0.0001_use_skip_frame_True_init_w_True_rein.txt',
+               'CARRACING REINFORCE lr = 0.0001, gamma = 0.95, init weight = True', 5)
 
 
 display_result(
     '/Users/kevin/PycharmProjects/reinforment-learning-work/work/record/2024-10-24 18:13:18.416525_SpaceInvader_greedy_10_greedy_min_01_decay_speed_1e-06_buffer_size_10000_target_update_freq_20_use_skip_frame_True_lr_0.001_init_w_True_dqn.txt',
                'DQN CARRACING lr = 0.00025, epsilon = 1.0 min = 0.1, decay = 1e-6, '
                'target update = 10000, init weight = False', 6)
-'''

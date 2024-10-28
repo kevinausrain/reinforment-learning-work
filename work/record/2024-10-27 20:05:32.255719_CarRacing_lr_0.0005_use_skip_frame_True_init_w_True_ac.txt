@@ -1,0 +1,14 @@
+Episode 1 done, steps = 113, actions = [0:1/113 | 1:7/113 | 2:2/113 | 3:101/113 | 4:2/113 | ], p_loss = 2847.510498046875, v_loss = 4.66454458710985e+23, rewards = -67.27898832684866, consume time = 2.488909959793091s
+Episode 2 done, steps = 178, actions = [0:0/65 | 1:0/65 | 2:0/65 | 3:65/65 | 4:0/65 | ], p_loss = 0, v_loss = 2.984938851469852e+24, rewards = 38.522137404580945, consume time = 3.8953640460968018s
+Episode 3 done, steps = 267, actions = [0:0/89 | 1:0/89 | 2:0/89 | 3:89/89 | 4:0/89 | ], p_loss = 0, v_loss = 8.374961312966194e+24, rewards = -58.83636363636402, consume time = 5.747690916061401s
+Episode 4 done, steps = 335, actions = [0:0/68 | 1:0/68 | 2:0/68 | 3:68/68 | 4:0/68 | ], p_loss = 0, v_loss = 1.059058014399387e+25, rewards = 31.576051779936137, consume time = 7.256022930145264s
+Episode 5 done, steps = 406, actions = [0:0/71 | 1:0/71 | 2:0/71 | 3:71/71 | 4:0/71 | ], p_loss = 0, v_loss = 1.6425040875149224e+25, rewards = 47.25773195876366, consume time = 8.808228015899658s
+Episode 6 done, steps = 495, actions = [0:0/89 | 1:0/89 | 2:0/89 | 3:89/89 | 4:0/89 | ], p_loss = 0, v_loss = 2.2890825281326224e+25, rewards = -68.75481727574794, consume time = 10.704874992370605s
+Episode 7 done, steps = 561, actions = [0:0/66 | 1:0/66 | 2:0/66 | 3:66/66 | 4:0/66 | ], p_loss = 0, v_loss = 2.403480703258635e+25, rewards = 28.009589041096632, consume time = 12.153239011764526s
+Episode 8 done, steps = 650, actions = [0:0/89 | 1:0/89 | 2:0/89 | 3:89/89 | 4:0/89 | ], p_loss = 0, v_loss = 3.6907881219482615e+25, rewards = -66.57147766323067, consume time = 14.071632862091064s
+Episode 9 done, steps = 721, actions = [0:0/71 | 1:0/71 | 2:0/71 | 3:71/71 | 4:0/71 | ], p_loss = 0, v_loss = 4.457438495000445e+25, rewards = 47.95633802816991, consume time = 15.668126821517944s
+Episode 10 done, steps = 788, actions = [0:0/67 | 1:0/67 | 2:0/67 | 3:67/67 | 4:0/67 | ], p_loss = 0, v_loss = 4.5051772851574e+25, rewards = 20.096815286624903, consume time = 17.189181804656982s
+Episode 11 done, steps = 850, actions = [0:0/62 | 1:0/62 | 2:0/62 | 3:62/62 | 4:0/62 | ], p_loss = 0, v_loss = 4.421287488301993e+25, rewards = 4.3198606271782864, consume time = 18.56521487236023s
+Episode 12 done, steps = 939, actions = [0:0/89 | 1:0/89 | 2:0/89 | 3:89/89 | 4:0/89 | ], p_loss = 0, v_loss = 7.003833042127136e+25, rewards = -66.09306930693114, consume time = 20.50660991668701s
+Episode 13 done, steps = 1028, actions = [0:0/89 | 1:0/89 | 2:0/89 | 3:89/89 | 4:0/89 | ], p_loss = 0, v_loss = 8.262120504208604e+25, rewards = -56.24861660079061, consume time = 22.39786171913147s
+Episode 14 done, steps = 1117, actions = [0:0/89 | 1:0/89 | 2:0/89 | 3:89/89 | 4:0/89 | ], p_loss = 0, v_loss = 9.947650238769649e+25, rewards = -76.02840236686433, consume time = 24.432183980941772s
